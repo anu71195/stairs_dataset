@@ -76,25 +76,25 @@ def get_gps_features(gpsinfo):
 
 
 
-def check(file_location):
+def check(file_location,delete_files_without_metadata):
 	wrong_files=[]
 
 	for file_directory in file_location:
 		for file_name in file_directory:
-			gpsinfo=extract_metadata(file_name)
 			try:
+				gpsinfo=extract_metadata(file_name)
 				gps_features=get_gps_features(gpsinfo);
 			except:
 				wrong_files.append(file_name)
-				os.remove(file_name)
+				if (delete_files_without_metadata):
+					os.remove(file_name)
 				print("-------------------")
 
 	return wrong_files
 
 
 new_dataset_preposition="augmented_"
-
-
+delete_files_without_metadata=0;
 locations=[]
 directory="augmented_dataset"
 locations.append(directory+"/no_stairs")
@@ -109,7 +109,7 @@ print("gathering image locations...\n")
 file_location=give_path_to_images(file_list,locations,new_dataset_preposition)
 
 
-wrong_files=(check(file_location))
+wrong_files=check(file_location,delete_files_without_metadata)
 
 print(wrong_files)
 print(len(wrong_files))
