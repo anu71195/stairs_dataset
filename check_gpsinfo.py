@@ -20,6 +20,19 @@ def get_file_list(location):
 	    break
 	return f;
 
+def get_dataset(locations):
+	file_list=[]
+	for i in locations:
+		file_list.append(get_file_list(i))
+	return file_list
+
+def give_path_to_images(file_list,locations,new_dataset_preposition):
+	for i in range(len(file_list)):
+		for j in range(len(file_list[i])):
+			file_list[i][j]=locations[i]+"/"+file_list[i][j]
+	return file_list
+
+
 def extract_metadata(filename):
 	print(filename)
 	#opening the image with the name given by the variable filename
@@ -63,38 +76,41 @@ def get_gps_features(gpsinfo):
 
 
 
-def check(file_list,location):
+def check(file_location):
 	wrong_files=[]
-	for name in file_list:
-		file_name=location+'/'+name;
-		gpsinfo=extract_metadata(file_name)
-		try:
-			gps_features=get_gps_features(gpsinfo);
-		except:
-			wrong_files.append(file_name)
-			os.remove(file_name)
-			print("-------------------")
+
+	for file_directory in file_location:
+		for file_name in file_directory:
+			gpsinfo=extract_metadata(file_name)
+			try:
+				gps_features=get_gps_features(gpsinfo);
+			except:
+				wrong_files.append(file_name)
+				os.remove(file_name)
+				print("-------------------")
 
 	return wrong_files
 
 
-directory="no_stairs";
-stairs_train_location=directory+"/training/stairs"
-no_stairs_train_location=directory+"/training/no_stairs"
-stairs_test_location=directory+"/testing/stairs"
-no_stairs_test_location=directory+"/testing/no_stairs"
+new_dataset_preposition="augmented_"
 
-file_list=get_file_list(directory)
-wrong_files=(check(file_list,directory))
+
+locations=[]
+directory="augmented_dataset"
+locations.append(directory+"/no_stairs")
+locations.append(directory+"/stairs/down")
+locations.append(directory+"/stairs/up")
+
+
+print("gathering image list...\n")
+file_list=get_dataset(locations)
+
+print("gathering image locations...\n")
+file_location=give_path_to_images(file_list,locations,new_dataset_preposition)
+
+
+wrong_files=(check(file_location))
 
 print(wrong_files)
 print(len(wrong_files))
 
-# file_list=get_file_list(no_stairs_train_location)
-# check(file_list,no_stairs_train_location)
-
-# file_list=get_file_list(stairs_test_location)
-# check(file_list,stairs_test_location)
-
-# file_list=get_file_list(no_stairs_test_location)
-# check(file_list,no_stairs_test_location)
