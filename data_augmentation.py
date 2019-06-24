@@ -51,7 +51,7 @@ def give_path_to_images(file_list,locations,new_dataset_preposition,clear_augmen
 	return file_list
 
 
-def augment_data(file_location,new_dataset_preposition,min_degree,max_degree,mean_array,var_array):
+def augment_data(file_location,new_dataset_preposition,min_degree,max_degree,mean_array,std_array,noises):
 	max_degree+=1;#in python the maxima is open bound not close bound so adding 1 to max degree
 	for i in file_location:
 		for j in i:
@@ -69,21 +69,31 @@ def augment_data(file_location,new_dataset_preposition,min_degree,max_degree,mea
 				print(new_j)
 				cv2.imwrite(new_j,rotation(flip_image,degrees))
 
-			for mean in mean_array:
-				for var in var_array:
+			for noise in noises:
+				if(noise=="gaussian"):	
+					for mean in mean_array:
+						for std in std_array:
 
-					image=noisy(image,mean,var)
-					for degrees in range(min_degree,max_degree):
-						new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(mean)+"_"+str(var)+"_noise_"+str(degrees)+"_rotate.jpg"
-						print(new_j)
-						cv2.imwrite(new_j,rotation(image,degrees))
+							noisy_image=noisy(image,mean,std)
+							for degrees in range(min_degree,max_degree):
+								new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(mean)+"_"+str(std)+"_"+noise+"_noise_"+str(degrees)+"_rotate.jpg"
+								print(new_j)
+								cv2.imwrite(new_j,rotation(noisy_image,degrees))
 
 
-					flip_image=horizontal_flip(image)
-					for degrees in range(min_degree,max_degree):
-						new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(mean)+"_"+str(var)+"_noise_flip_"+str(degrees)+"_rotate.jpg"
-						print(new_j)
-						cv2.imwrite(new_j,rotation(flip_image,degrees))
+							flip_image=horizontal_flip(noisy_image)
+							for degrees in range(min_degree,max_degree):
+								new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(mean)+"_"+str(std)+"_"+noise+"_noise_flip_"+str(degrees)+"_rotate.jpg"
+								print(new_j)
+								cv2.imwrite(new_j,rotation(flip_image,degrees))
+
+				elif(noise=="salt&pepper"):
+					pass;
+				elif(noise=="poisson"):
+					pass;
+				elif(noise=="speckle"):
+					pass;
+
 			exit()
 
 
@@ -124,12 +134,14 @@ def horizontal_flip(image_array: ndarray):
 
 
 new_dataset_preposition="augmented_"
+noises=["gaussian","salt&pepper","poisson","speckle"]
 clear_augment_dataset=1;
 min_degree=-0
 max_degree=0
-mean_array=np.arange(-3,3)
-std_array=np.arange(6,12)
-var_array=np.square(std_array)
+mean_array=np.arange(-3,4,3)
+# var_array=np.arange(50,400,10)
+# std_array=np.sqrt(var_array)
+std_array=np.arange(80,126,15)
 
 locations=[]
 locations.append("dataset/no_stairs")
@@ -143,5 +155,5 @@ print("gathering image locations...\n")
 file_location=give_path_to_images(file_list,locations,new_dataset_preposition,clear_augment_dataset)
 
 print("augmenting data....\n")
-augment_data(file_location,new_dataset_preposition,min_degree,max_degree,mean_array,var_array)
+augment_data(file_location,new_dataset_preposition,min_degree,max_degree,mean_array,std_array,noises)
 
