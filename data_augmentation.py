@@ -10,6 +10,8 @@ from PIL import Image
 import os
 import shutil
 from os import walk
+import matplotlib
+from matplotlib import pyplot as plt
 
 
 def check_create_directory(directories,new_dataset_preposition):
@@ -49,40 +51,40 @@ def give_path_to_images(file_list,locations,new_dataset_preposition,clear_augmen
 	return file_list
 
 
-def augment_data(file_location,new_dataset_preposition,min_degree,max_degree,mean_array,std_array):
+def augment_data(file_location,new_dataset_preposition,min_degree,max_degree,mean_array,var_array):
+	max_degree+=1;#in python the maxima is open bound not close bound so adding 1 to max degree
 	for i in file_location:
 		for j in i:
 			print(j)
 			image=cv2.imread(j)
-
-			new_j=new_dataset_preposition+j.split(".")[0]+"_orig.jpg"
-			print(new_j)
-			cv2.imwrite(new_j,image)
-
-			new_j=new_dataset_preposition+j.split(".")[0]+"_flip.jpg"
-			print(new_j)
-			cv2.imwrite(new_j,horizontal_flip(image))
 
 			for degrees in range(min_degree,max_degree):
 				new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(degrees)+"_rotate.jpg"
 				print(new_j)
 				cv2.imwrite(new_j,rotation(image,degrees))
 
+			flip_image=horizontal_flip(image)
+			for degrees in range(min_degree,max_degree):
+				new_j=new_dataset_preposition+j.split(".")[0]+"_flip_"+str(degrees)+"_rotate.jpg"
+				print(new_j)
+				cv2.imwrite(new_j,rotation(flip_image,degrees))
+
 			for mean in mean_array:
-				for std in std_array:
-					new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(mean)+"_"+str(std)+"_noise.jpg"
-					print(new_j)
-					image=noisy(image,mean,std)
-					cv2.imwrite(new_j,image)
+				for var in var_array:
 
-					new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(mean)+"_"+str(std)+"_noise_flip.jpg"
-					print(new_j)
-					cv2.imwrite(new_j,horizontal_flip(image))
-
+					image=noisy(image,mean,var)
 					for degrees in range(min_degree,max_degree):
-						new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(mean)+"_"+str(std)+"_noise_"+str(degrees)+"_rotate.jpg"
+						new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(mean)+"_"+str(var)+"_noise_"+str(degrees)+"_rotate.jpg"
 						print(new_j)
 						cv2.imwrite(new_j,rotation(image,degrees))
+
+
+					flip_image=horizontal_flip(image)
+					for degrees in range(min_degree,max_degree):
+						new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(mean)+"_"+str(var)+"_noise_flip_"+str(degrees)+"_rotate.jpg"
+						print(new_j)
+						cv2.imwrite(new_j,rotation(flip_image,degrees))
+			exit()
 
 
 
@@ -92,9 +94,10 @@ def rotation(img,degrees):
 	dst = cv2.warpAffine(img,M,(cols,rows))
 	return dst
 
-def noisy(image,mean,std):  
+def noisy(image,mean,var):  
   row,col,ch= image.shape
-  return (image + np.random.normal(mean,std,image.shape))
+  print(mean,var)
+  return (image + np.random.normal(mean,var,image.shape))
    
 def horizontal_flip(image_array: ndarray):
     # horizontal flip doesn't need skimage, it's easy as flipping the image array of pixels !
@@ -122,10 +125,11 @@ def horizontal_flip(image_array: ndarray):
 
 new_dataset_preposition="augmented_"
 clear_augment_dataset=1;
-min_degree=-10
-max_degree=10;
-mean_array=[5]
-std_array=[20]
+min_degree=-0
+max_degree=0
+mean_array=np.arange(-3,3)
+std_array=np.arange(6,12)
+var_array=np.square(std_array)
 
 locations=[]
 locations.append("dataset/no_stairs")
@@ -139,5 +143,5 @@ print("gathering image locations...\n")
 file_location=give_path_to_images(file_list,locations,new_dataset_preposition,clear_augment_dataset)
 
 print("augmenting data....\n")
-augment_data(file_location,new_dataset_preposition,min_degree,max_degree,mean_array,std_array)
+augment_data(file_location,new_dataset_preposition,min_degree,max_degree,mean_array,var_array)
 

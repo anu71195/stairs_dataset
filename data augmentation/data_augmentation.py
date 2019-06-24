@@ -7,15 +7,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 from PIL import Image
-
-# def random_rotation(image_array: ndarray):
-#     # pick a random degree of rotation between 25% on the left and 25% on the right
-#     random_degree = random.uniform(-25, 25)
-#     return sk.transform.rotate(image_array, random_degree)
-
-# def random_noise(image_array: ndarray):
-#     # add random noise to the image
-#     return sk.util.random_noise(image_array)
+import matplotlib 
+from matplotlib import pyplot as plt
 
 
 def rotation(img):
@@ -26,9 +19,13 @@ def rotation(img):
 
 def noisy(image):  
   row,col,ch= image.shape
-  mean = 5
-  std =20.0
-  return (image + np.random.normal(mean,std,image.shape))
+  mean = 20
+  sigma =40**0.5
+  noise=np.random.normal(mean,sigma,image.shape)
+  print(image)
+  print(noise)
+  print(image+noise)
+  return (image + noise)
    
 def horizontal_flip(image_array: ndarray):
     # horizontal flip doesn't need skimage, it's easy as flipping the image array of pixels !
@@ -36,9 +33,24 @@ def horizontal_flip(image_array: ndarray):
 
 
 image=cv2.imread("IMG_20190510_181157.jpg");
+noisy_image=noisy(image)
+print(noisy_image)
+
+
+fig=plt.figure(figsize=(1,2))
+fig.add_subplot(1,1,1)
+plt.imshow(image)
+
+
+cv2.imwrite("img_noise.jpg",noisy_image)
+image=cv2.imread("img_noise.jpg")
+print(image)
+fig.add_subplot(1,2,2)
+plt.imshow(image)
+plt.show()
 # cv2.imwrite("img_noise.jpg",noisy(image))
 # cv2.imwrite("img_flip.jpg",horizontal_flip(image))
-cv2.imwrite("img_rot.jpg",rotation(image))
+
 
 
 cv2.waitKey(0)
