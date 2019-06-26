@@ -173,6 +173,39 @@ def extract_metadata(filename):
 	#returning the gpsinfo
 	return gpsinfo
 
+
+
+def image_resize(image, width = None, height = None, inter = cv2.INTER_AREA):
+    # initialize the dimensions of the image to be resized and
+    # grab the image size
+    dim = None
+    (h, w) = image.shape[:2]
+
+    # if both the width and height are None, then return the
+    # original image
+    if width is None and height is None:
+        return image
+
+    # check to see if the width is None
+    if width is None:
+        # calculate the ratio of the height and construct the
+        # dimensions
+        r = height / float(h)
+        dim = (int(w * r), height)
+
+    # otherwise, the height is None
+    else:
+        # calculate the ratio of the width and construct the
+        # dimensions
+        r = width / float(w)
+        dim = (width, int(h * r))
+    dim=(width,height);
+    # resize the image
+    resized = cv2.resize(image, dim, interpolation = inter)  
+    
+    #returning the resized image
+    return resized
+
 def add_metadata(exiff,filename):#this function seems not working so instead the metadata is stored in a dictionary which iis stored in a pickle file
 	print(exiff)
 	img=Image.open(filename)
@@ -186,7 +219,7 @@ def save_image_fit_resolution(image,location):##expects floating valued image an
 def save_image_same_resolution(image,location):##expects floating valued image and save the image the same resolution given by the image which is the parameters to this function
 	cv2.imwrite(location,image*255)
 
-def augment_data(file_location,new_dataset_preposition,degree_range,noises):#all the augmentation is done in this function
+def augment_data(file_location,new_dataset_preposition,degree_range,noises,width=None,height=None):#all the augmentation is done in this function
 	metadata={}
 	total_files=0;
 	counter=0;#keep track of number of files created
@@ -205,6 +238,8 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises):#all
 		for j in i:
 
 			image=(cv2.imread(j))/255.0
+			if(width!=None and height!=None):
+				image=image_resize(image,width,height)
 			exif=extract_metadata(j)#extrcting metadata from the file given by name stored in j
 			#normal image for every degree mentioned in degree_range one image will be created 
 			for degrees in degree_range:
@@ -264,7 +299,6 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises):#all
 					rotated_image=rotation(flip_image,degrees)
 					save_image_same_resolution(rotated_image,new_j)
 					metadata[new_j]=exif;
-
 	fp=open("metadata.pkl","wb")
 	pickle.dump(metadata, fp, pickle.HIGHEST_PROTOCOL)
 
@@ -279,6 +313,8 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises):#all
 
 
 total_time=time.time()
+width=640
+height=640
 new_dataset_preposition="augmented_"
 noises=["gaussian","localvar","s&p","poisson","speckle","salt","pepper"]
 clear_augment_dataset=0;#setting this true will delete all the previous augmented data if created
@@ -302,7 +338,7 @@ file_location=give_path_to_images(file_list,locations,new_dataset_preposition,cl
 
 augment_time=time.time()
 print("\naugmenting data....\n")
-augment_data(file_location,new_dataset_preposition,degree_range,noises)#all the augmentation is done in this function
-print("time to augment data=",time.time()-augment_time)
+augment_data(file_location,new_dataset_preposition,degree_range,noises,width,height)#all the augmentation is done in this function
+print("\n\n\ntime to augment data=",time.time()-augment_time)
 print("total time taken=",time.time()-total_time)
 

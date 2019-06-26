@@ -3,7 +3,7 @@ from os import walk
 from PIL import Image, ExifTags
 import numpy as np
 
-def get_direction_number(direction):
+def get_direction_number(direction):#numerating the magnetic direction metadata
 	if(direction=='E'):
 		return 0;
 	elif(direction=='W'):
@@ -13,27 +13,27 @@ def get_direction_number(direction):
 	elif(direction=='S'):
 		return 3;
 
-def get_file_list(location):
+def get_file_list(location):#collect all the file names from the given location/directory
 	f = []
 	for (dirpath, dirnames, filenames) in walk(location):
 	    f.extend(filenames)
 	    break
 	return f;
 
-def get_dataset(locations):
+def get_dataset(locations):#collect all the file names from each location/directory from the list of location given as an argument
 	file_list=[]
 	for i in locations:
 		file_list.append(get_file_list(i))
 	return file_list
 
-def give_path_to_images(file_list,locations,new_dataset_preposition):
+def give_path_to_images(file_list,locations,new_dataset_preposition):#catenate the string file name with its path and deleting the older augmented dataset directories if clear_augment_dataset is set to true
 	for i in range(len(file_list)):
 		for j in range(len(file_list[i])):
 			file_list[i][j]=locations[i]+"/"+file_list[i][j]
 	return file_list
 
 
-def extract_metadata(filename):
+def extract_metadata(filename):#extracts metadata
 	print(filename)
 	#opening the image with the name given by the variable filename
 	img = Image.open(filename)
@@ -56,7 +56,7 @@ def extract_metadata(filename):
 	#returning the gpsinfo
 	return gpsinfo
 
-def get_gps_features(gpsinfo):
+def get_gps_features(gpsinfo):#gets gps features from the extracted metadata
 	features=np.array([]);
 	features=np.append(features,gpsinfo['GPSAltitude'][0]/gpsinfo['GPSAltitude'][1])
 	features[-1]=features[-1]/1000;
@@ -75,10 +75,9 @@ def get_gps_features(gpsinfo):
 	return features
 
 
-
+#checks if the file has metadata if not then if delete_files_without_metadata is set then it deletes those file else it just creates a list and then tell those files which are without gps_info or metadata
 def check(file_location,delete_files_without_metadata):
 	wrong_files=[]
-
 	for file_directory in file_location:
 		for file_name in file_directory:
 			try:
