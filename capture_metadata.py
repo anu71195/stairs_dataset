@@ -1,5 +1,6 @@
 from os import walk
 from PIL import Image, ExifTags
+import pickle 
 
 def get_dataset(locations):
 	file_list=[]
@@ -75,5 +76,10 @@ print("gathering image locations...\n")
 file_location=give_path_to_images(file_list,locations)
 
 metadata=get_metadata(file_location)
+
+
+fp=open("storage.pkl","wb")
+pickle.dump(metadata, fp, pickle.HIGHEST_PROTOCOL)
+
 print(metadata)
 

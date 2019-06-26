@@ -13,6 +13,7 @@ import matplotlib
 from matplotlib import pyplot as plt
 from PIL import Image, ExifTags
 import piexif
+import pickle
 import numpy as np
 
 
@@ -151,6 +152,7 @@ def extract_metadata(filename):
 
 	#reading the metadata
 	exif = { ExifTags.TAGS[k]: v for k, v in img._getexif().items() if k in ExifTags.TAGS }
+	return exif;
 	print(exif)
 	# return exif;
 	#creating initial empty dictionary
@@ -223,9 +225,8 @@ def augment_data(file_location,new_dataset_preposition,degree_range,mean_array,s
 					rotated_image=rotation(flip_image,degrees)
 					save_image_fit_resolution(rotated_image,new_j)
 					metadata[new_j]=exif;
-			print(metadata)
-			exit();
-
+	fp=open("storage.pkl","wb")
+	pickle.dump(metadata, fp, pickle.HIGHEST_PROTOCOL)
 
 
 
