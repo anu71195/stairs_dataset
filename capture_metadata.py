@@ -75,5 +75,5 @@ print("gathering image locations...\n")
 file_location=give_path_to_images(file_list,locations)
 
 metadata=get_metadata(file_location)
-# print(metadata)
+print(metadata)
 
