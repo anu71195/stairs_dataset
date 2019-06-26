@@ -2,6 +2,17 @@
 
 Dataset is provided in the directory "dataset" which contains two subdirectories stairs and no_stairs and further stairs contains two more subdirectories namely "up" and "down" for up and down staircases respectively
 
+## Prerequisites
+* python
+* scipy
+* skimage
+* matplotlib
+* numpy
+* cv2
+* PIL
+
+
+
 ## Files
 
 ### check_gpsinfo.py
