@@ -2,15 +2,15 @@
 
 Dataset is provided in the directory "dataset" which contains two subdirectories stairs and no_stairs and further stairs contains two more subdirectories namely "up" and "down" for up and down staircases respectively
 
-##Files
+## Files
 
-###check_gpsinfo.py
+### check_gpsinfo.py
 
 *locations*:-Empty it (if needed) and add the path/location of all the directory which you want to check the whether it has gps info or metadata 
 *delete_files_without_metadata*:-If set the files which are without gpsinfo or without metadata will be deleted
 **check**:-It checks whether the image has metadata or gps info. It takes two parameters one is *delete_files_without_metadata* and other is derives from the variables *locations*
 
-###data_augmentation.py
+### data_augmentation.py
 
 *new_dataset_preposition*:-By default it is set to "augmented_" that means augmented dataset created will have name as "augmented_dataset" changing that will change the preposition before dataset
 *noises*:-list of noises which will be generated. Remove the noises from the list which are unwanted
@@ -23,7 +23,7 @@ Dataset is provided in the directory "dataset" which contains two subdirectories
 **save_image_same_resolution**:-saves the image in the **augment_data** function as the same resolution as given the input
 **save_image_fit_resolution**:saves the image in the **augment_data** function minimized (as visualized by cv2 in imshow). However note that this function is slower than the **save_image_same_resolution**. It can be changed manually by replacing function name in **augment_data**.
 
-##Var Directory
+## Var Directory
 
 It contains the part of the code from the data_augmentation.py which are implemented independently for visual and knowledge purpose
 
