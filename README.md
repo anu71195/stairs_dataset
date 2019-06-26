@@ -45,7 +45,7 @@ Dataset is provided in the directory "dataset" which contains two subdirectories
 
 * **save_image_fit_resolution**:saves the image in the **augment_data** function minimized (as visualized by cv2 in imshow). However note that this function is slower than the **save_image_same_resolution**. It can be changed manually by replacing function name in **augment_data**.
 
-## Var Directory
+### Var Directory
 
 It contains the part of the code from the data_augmentation.py which are implemented independently for visual and knowledge purpose
 
