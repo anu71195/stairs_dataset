@@ -246,7 +246,7 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 				counter+=1;
 				if(counter%5==0 or counter==total_images_created):
 					current_time=time.time()-estd_time
-					print("                                                    ",end="\r")
+					print("                                                                         ",end="\r")
 					print((counter/total_images_created)*100,"% \tEstimated time = ",math.floor((current_time*(total_images_created-counter))/counter )," seconds",end="\r");
 				new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(degrees)+"_rotate.jpg"
 				# print(new_j)
@@ -261,7 +261,7 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 				counter+=1;
 				if(counter%5==0 or counter==total_images_created):
 					current_time=time.time()-estd_time
-					print("                                                    ",end="\r")
+					print("                                                                         ",end="\r")
 					print((counter/total_images_created)*100,"% \tEstimated time = ",math.floor((current_time*(total_images_created-counter))/counter)," seconds",end="\r");
 				new_j=new_dataset_preposition+j.split(".")[0]+"_flip_"+str(degrees)+"_rotate.jpg"
 				# print(new_j)
@@ -277,7 +277,7 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 					counter+=1;
 					if(counter%5==0 or counter==total_images_created):
 						current_time=time.time()-estd_time
-						print("                                                    ",end="\r")
+						print("                                                                         ",end="\r")
 						print((counter/total_images_created)*100,"% \tEstimated time = ",math.floor((current_time*(total_images_created-counter))/counter)," seconds",end="\r");
 					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_"+str(degrees)+"_rotate.jpeg"
 					# print(new_j)
@@ -292,13 +292,14 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 					counter+=1;
 					if(counter%5==0 or counter==total_images_created):
 						current_time=time.time()-estd_time
-						print("                                                    ",end="\r")
+						print("                                                                         ",end="\r")
 						print((counter/total_images_created)*100,"% \tEstimated time = ",math.floor((current_time*(total_images_created-counter))/counter)," seconds",end="\r");
 					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_flip_"+str(degrees)+"_rotate.jpg"
 					# print(new_j)
 					rotated_image=rotation(flip_image,degrees)
 					save_image_same_resolution(rotated_image,new_j)
 					metadata[new_j]=exif;
+			
 	fp=open("metadata.pkl","wb")
 	pickle.dump(metadata, fp, pickle.HIGHEST_PROTOCOL)
 
@@ -313,11 +314,11 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 
 
 total_time=time.time()
-width=640
-height=640
+width=240
+height=320
 new_dataset_preposition="augmented_"
 noises=["gaussian","localvar","s&p","poisson","speckle","salt","pepper"]
-clear_augment_dataset=0;#setting this true will delete all the previous augmented data if created
+clear_augment_dataset=1;#setting this true will delete all the previous augmented data if created
 degree_range=np.arange(-10,+11,5)#rotations in augmented data varies form -10 to 10 in an interval of 5
 mean_array=np.arange(-3,4,3)#mean array ranges from -3 to 3 in an interval of 3
 std_array=np.arange(80,126,15)#std array ranges from 80 to 125 in an interval of 15
