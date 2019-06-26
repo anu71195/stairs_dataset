@@ -15,7 +15,7 @@ from PIL import Image, ExifTags
 import piexif
 import pickle
 import numpy as np
-
+import time
 
 def check_create_directory(directories,new_dataset_preposition):
 	for directory_loc in directories:
@@ -187,6 +187,7 @@ def augment_data(file_location,new_dataset_preposition,degree_range,mean_array,s
 	metadata={}
 	for i in file_location:
 		for j in i:
+			a=time.time()
 			print(j)
 			image=(cv2.imread(j))/255.0
 			exif=extract_metadata(j)
@@ -194,7 +195,7 @@ def augment_data(file_location,new_dataset_preposition,degree_range,mean_array,s
 				new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(degrees)+"_rotate.jpg"
 				print(new_j)
 				rotated_image=rotation(image,degrees)
-				save_image_fit_resolution(rotated_image,new_j)
+				save_image_same_resolution(rotated_image,new_j)
 				metadata[new_j]=exif;
 
 			flip_image=horizontal_flip(image)
@@ -202,7 +203,7 @@ def augment_data(file_location,new_dataset_preposition,degree_range,mean_array,s
 				new_j=new_dataset_preposition+j.split(".")[0]+"_flip_"+str(degrees)+"_rotate.jpg"
 				print(new_j)
 				rotated_image=rotation(flip_image,degrees)
-				save_image_fit_resolution(rotated_image,new_j)
+				save_image_same_resolution(rotated_image,new_j)
 				metadata[new_j]=exif;
 
 
@@ -213,7 +214,7 @@ def augment_data(file_location,new_dataset_preposition,degree_range,mean_array,s
 					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_"+str(degrees)+"_rotate.jpeg"
 					print(new_j)
 					rotated_image=rotation(noisy_image,degrees)
-					save_image_fit_resolution(rotated_image,new_j)
+					save_image_same_resolution(rotated_image,new_j)
 					metadata[new_j]=exif;
 
 
@@ -223,9 +224,10 @@ def augment_data(file_location,new_dataset_preposition,degree_range,mean_array,s
 					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_flip_"+str(degrees)+"_rotate.jpg"
 					print(new_j)
 					rotated_image=rotation(flip_image,degrees)
-					save_image_fit_resolution(rotated_image,new_j)
+					save_image_same_resolution(rotated_image,new_j)
 					metadata[new_j]=exif;
-	fp=open("storage.pkl","wb")
+			print(time.time()-a)
+	fp=open("metadata.pkl","wb")
 	pickle.dump(metadata, fp, pickle.HIGHEST_PROTOCOL)
 
 
@@ -250,7 +252,7 @@ def augment_data(file_location,new_dataset_preposition,degree_range,mean_array,s
 new_dataset_preposition="augmented_"
 noises=["gaussian","localvar","s&p","poisson","speckle","salt","pepper"]
 clear_augment_dataset=1;
-degree_range=np.arange(-0,+1)
+degree_range=np.arange(-10,+11,5)
 mean_array=np.arange(-3,4,3)
 std_array=np.arange(80,126,15)
 
