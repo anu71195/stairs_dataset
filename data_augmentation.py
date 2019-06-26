@@ -6,12 +6,14 @@ from skimage import util
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
-from PIL import Image
 import os
 import shutil
 from os import walk
 import matplotlib
 from matplotlib import pyplot as plt
+from PIL import Image, ExifTags
+import piexif
+import numpy as np
 
 
 def check_create_directory(directories,new_dataset_preposition):
@@ -141,56 +143,91 @@ def horizontal_flip(image_array: ndarray):
     return image_array[:, ::-1]
 
 
+#extracts the gpsinfo from the image by the filename given as the input
+def extract_metadata(filename):
+	print(filename)
+	#opening the image with the name given by the variable filename
+	img = Image.open(filename)
 
+	#reading the metadata
+	exif = { ExifTags.TAGS[k]: v for k, v in img._getexif().items() if k in ExifTags.TAGS }
+	print(exif)
+	# return exif;
+	#creating initial empty dictionary
+	gpsinfo={}
 
-def augment_data(file_location,new_dataset_preposition,min_degree,max_degree,mean_array,std_array,noises):
-	max_degree+=1;#in python the maxima is open bound not close bound so adding 1 to max degree
-	fig=plt.figure(figsize=(18,24))
-	counter=1
+	#looping over every information given about the gps form the metadata
+	for key in exif['GPSInfo'].keys():
+
+		#getting the key from the metadata
+		decode = ExifTags.GPSTAGS.get(key,key)
+
+		#storing the data with the key in gpsinfo
+		gpsinfo[decode]=exif['GPSInfo'][key]
+
+	print(gpsinfo)
+	#returning the gpsinfo
+	return gpsinfo
+def add_metadata(exiff,filename):
+	print(exiff)
+	img=Image.open(filename)
+	img.save("augmented_dataset/no_stairs/final.png",exif=piexif.dump(exiff))
+
+def save_image_fit_resolution(image,location):##floating valued image
+	plt.imshow(image)
+	plt.axis('off')
+	plt.savefig(location,bbox_inches='tight',pad_inches = 0)
+
+def save_image_same_resolution(image,location):##floating valued image
+	cv2.imwrite(location,image*255)
+
+def augment_data(file_location,new_dataset_preposition,degree_range,mean_array,std_array,noises):
+	metadata={}
 	for i in file_location:
 		for j in i:
 			print(j)
 			image=(cv2.imread(j))/255.0
-
-			for degrees in range(min_degree,max_degree):
+			exif=extract_metadata(j)
+			for degrees in degree_range:
 				new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(degrees)+"_rotate.jpg"
 				print(new_j)
 				rotated_image=rotation(image,degrees)
-				cv2.imwrite(new_j,rotated_image*255.0)
-				plt.subplot(4,2,counter)
-				plt.imshow(rotated_image)
-				counter+=1
+				save_image_fit_resolution(rotated_image,new_j)
+				metadata[new_j]=exif;
 
 			flip_image=horizontal_flip(image)
-			for degrees in range(min_degree,max_degree):
+			for degrees in degree_range:
 				new_j=new_dataset_preposition+j.split(".")[0]+"_flip_"+str(degrees)+"_rotate.jpg"
 				print(new_j)
 				rotated_image=rotation(flip_image,degrees)
-				cv2.imwrite(new_j,rotated_image*255.0)
+				save_image_fit_resolution(rotated_image,new_j)
+				metadata[new_j]=exif;
+
 
 
 			for noise in noises:
 				noisy_image = util.random_noise(image, mode=noise)
-				for degrees in range(min_degree,max_degree):
-					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_"+str(degrees)+"_rotate.jpg"
+				for degrees in degree_range:
+					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_"+str(degrees)+"_rotate.jpeg"
 					print(new_j)
 					rotated_image=rotation(noisy_image,degrees)
-					cv2.imwrite(new_j,rotated_image*255.0)
-					plt.subplot(4,2,counter)
-					plt.imshow(rotated_image)
-					counter+=1
+					save_image_fit_resolution(rotated_image,new_j)
+					metadata[new_j]=exif;
+
 
 
 				flip_image=horizontal_flip(noisy_image)
-				for degrees in range(min_degree,max_degree):
+				for degrees in degree_range:
 					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_flip_"+str(degrees)+"_rotate.jpg"
 					print(new_j)
 					rotated_image=rotation(flip_image,degrees)
-					cv2.imwrite(new_j,rotated_image*255.0)
+					save_image_fit_resolution(rotated_image,new_j)
+					metadata[new_j]=exif;
+			print(metadata)
+			exit();
 
 
-			plt.show()
-			exit()
+
 
 
 
@@ -215,8 +252,7 @@ def augment_data(file_location,new_dataset_preposition,min_degree,max_degree,mea
 new_dataset_preposition="augmented_"
 noises=["gaussian","localvar","s&p","poisson","speckle","salt","pepper"]
 clear_augment_dataset=1;
-min_degree=-0
-max_degree=0
+degree_range=np.arange(-0,+1)
 mean_array=np.arange(-3,4,3)
 std_array=np.arange(80,126,15)
 
@@ -232,5 +268,5 @@ print("gathering image locations...\n")
 file_location=give_path_to_images(file_list,locations,new_dataset_preposition,clear_augment_dataset)
 
 print("augmenting data....\n")
-augment_data(file_location,new_dataset_preposition,min_degree,max_degree,mean_array,std_array,noises)
+augment_data(file_location,new_dataset_preposition,degree_range,mean_array,std_array,noises)
 
