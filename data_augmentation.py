@@ -23,7 +23,7 @@ def check_create_directory(directories,new_dataset_preposition):
 		directory=new_dataset_preposition
 		for loc_part in directory_loc:
 			directory=directory +(loc_part+"/")
-			print(directory)
+			print("creating " +directory)
 			if not os.path.exists(directory):
 				os.makedirs(directory)
 
@@ -43,6 +43,7 @@ def get_dataset(locations):
 def give_path_to_images(file_list,locations,new_dataset_preposition,clear_augment_dataset):
 	if clear_augment_dataset:
 		try:
+			print("Emptying "+new_dataset_preposition+"dataset...\n")
 			shutil.rmtree(new_dataset_preposition+"dataset")
 		except:
 			pass
@@ -146,7 +147,7 @@ def horizontal_flip(image_array: ndarray):
 
 #extracts the gpsinfo from the image by the filename given as the input
 def extract_metadata(filename):
-	print(filename)
+	# print(filename)
 	#opening the image with the name given by the variable filename
 	img = Image.open(filename)
 
@@ -185,23 +186,38 @@ def save_image_same_resolution(image,location):##floating valued image
 
 def augment_data(file_location,new_dataset_preposition,degree_range,mean_array,std_array,noises):
 	metadata={}
+	total_files=0;
+	counter=0;
+
+	for i in file_location:
+		total_files=total_files+len(i)
+	print("Number of files=",total_files,"\n")
+	total_images_created=total_files*2*len(degree_range)*(len(noises)+1)
+	print("number of files htat will be created=",total_images_created,"\n")
 	for i in file_location:
 		for j in i:
-			a=time.time()
-			print(j)
+
 			image=(cv2.imread(j))/255.0
 			exif=extract_metadata(j)
 			for degrees in degree_range:
+				counter+=1;
+				if(counter%10==0 or counter==total_images_created):
+					print("                                                    ",end="\r")
+					print((counter/total_images_created)*100,"%",end="\r");
 				new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(degrees)+"_rotate.jpg"
-				print(new_j)
+				# print(new_j)
 				rotated_image=rotation(image,degrees)
 				save_image_same_resolution(rotated_image,new_j)
 				metadata[new_j]=exif;
 
 			flip_image=horizontal_flip(image)
 			for degrees in degree_range:
+				counter+=1;
+				if(counter%10==0 or counter==total_images_created):
+					print("                                                    ",end="\r")
+					print((counter/total_images_created)*100,"%",end="\r");
 				new_j=new_dataset_preposition+j.split(".")[0]+"_flip_"+str(degrees)+"_rotate.jpg"
-				print(new_j)
+				# print(new_j)
 				rotated_image=rotation(flip_image,degrees)
 				save_image_same_resolution(rotated_image,new_j)
 				metadata[new_j]=exif;
@@ -211,8 +227,12 @@ def augment_data(file_location,new_dataset_preposition,degree_range,mean_array,s
 			for noise in noises:
 				noisy_image = util.random_noise(image, mode=noise)
 				for degrees in degree_range:
+					counter+=1;
+					if(counter%10==0 or counter==total_images_created):
+						print("                                                    ",end="\r")
+						print((counter/total_images_created)*100,"%",end="\r");
 					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_"+str(degrees)+"_rotate.jpeg"
-					print(new_j)
+					# print(new_j)
 					rotated_image=rotation(noisy_image,degrees)
 					save_image_same_resolution(rotated_image,new_j)
 					metadata[new_j]=exif;
@@ -221,12 +241,16 @@ def augment_data(file_location,new_dataset_preposition,degree_range,mean_array,s
 
 				flip_image=horizontal_flip(noisy_image)
 				for degrees in degree_range:
+					counter+=1;
+					if(counter%20==0 or counter==total_images_created):
+						print("                                                    ",end="\r")
+						print((counter/total_images_created)*100,"%",end="\r");
 					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_flip_"+str(degrees)+"_rotate.jpg"
-					print(new_j)
+					# print(new_j)
 					rotated_image=rotation(flip_image,degrees)
 					save_image_same_resolution(rotated_image,new_j)
 					metadata[new_j]=exif;
-			print(time.time()-a)
+			return;
 	fp=open("metadata.pkl","wb")
 	pickle.dump(metadata, fp, pickle.HIGHEST_PROTOCOL)
 
@@ -251,15 +275,15 @@ def augment_data(file_location,new_dataset_preposition,degree_range,mean_array,s
 
 new_dataset_preposition="augmented_"
 noises=["gaussian","localvar","s&p","poisson","speckle","salt","pepper"]
-clear_augment_dataset=1;
+clear_augment_dataset=0;
 degree_range=np.arange(-10,+11,5)
 mean_array=np.arange(-3,4,3)
 std_array=np.arange(80,126,15)
 
 locations=[]
-locations.append("dataset/stairs/up")
 locations.append("dataset/no_stairs")
-locations.append("dataset/stairs/down")
+# locations.append("dataset/stairs/up")
+# locations.append("dataset/stairs/down")
 
 print("gathering image list...\n")
 file_list=get_dataset(locations)
@@ -267,6 +291,7 @@ file_list=get_dataset(locations)
 print("gathering image locations...\n")
 file_location=give_path_to_images(file_list,locations,new_dataset_preposition,clear_augment_dataset)
 
-print("augmenting data....\n")
+start_time=time.time()
+print("\naugmenting data....\n")
 augment_data(file_location,new_dataset_preposition,degree_range,mean_array,std_array,noises)
-
+print("time to augment data=",time.time()-start_time)
