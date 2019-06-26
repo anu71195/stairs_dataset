@@ -235,7 +235,7 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises):#all
 				metadata[new_j]=exif;
 
 
-			#for every noise mentioned in noises for image and flip image for every degree mentioned in degree_ranged one image will be created
+			#for every noise mentioned in noises for image and fliped image for every degree mentioned in degree_ranged one image will be created
 			for noise in noises:
 				noisy_image = util.random_noise(image, mode=noise)
 				for degrees in degree_range:
