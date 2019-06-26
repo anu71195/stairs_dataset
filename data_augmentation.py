@@ -247,9 +247,6 @@ def augment_data(file_location,new_dataset_preposition,degree_range,mean_array,s
 
 #it is expected that no changes in the directory names are made in the dataset including the directory dataset
 
-
-
-
 new_dataset_preposition="augmented_"
 noises=["gaussian","localvar","s&p","poisson","speckle","salt","pepper"]
 clear_augment_dataset=1;

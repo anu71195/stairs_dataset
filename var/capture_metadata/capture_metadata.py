@@ -81,5 +81,8 @@ metadata=get_metadata(file_location)
 fp=open("storage.pkl","wb")
 pickle.dump(metadata, fp, pickle.HIGHEST_PROTOCOL)
 
+fp=open("storage.pkl","rb")
+a=pickle.load(fp)
+
 print(metadata)
 
