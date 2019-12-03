@@ -248,7 +248,10 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 					current_time=time.time()-estd_time
 					print("                                                                         ",end="\r")
 					print((counter/total_images_created)*100,"% \tEstimated time = ",math.floor((current_time*(total_images_created-counter))/counter )," seconds",end="\r");
-				new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(degrees)+"_rotate.jpg"
+				mathematicalSign = "positive"
+				if (degrees < 0):
+						mathematicalSign = "negative"
+				new_j=new_dataset_preposition+j.split(".")[0]+"_"+mathematicalSign+"_"+str(degrees)+"_rotate.jpg"
 				# print(new_j)
 				rotated_image=rotation(image,degrees)
 				save_image_same_resolution(rotated_image,new_j)
@@ -263,7 +266,10 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 					current_time=time.time()-estd_time
 					print("                                                                         ",end="\r")
 					print((counter/total_images_created)*100,"% \tEstimated time = ",math.floor((current_time*(total_images_created-counter))/counter)," seconds",end="\r");
-				new_j=new_dataset_preposition+j.split(".")[0]+"_flip_"+str(degrees)+"_rotate.jpg"
+				mathematicalSign = "positive"
+				if (degrees < 0):
+						mathematicalSign = "negative"
+				new_j=new_dataset_preposition+j.split(".")[0]+"_flip_"+mathematicalSign+"_"+str(degrees)+"_rotate.jpg"
 				# print(new_j)
 				rotated_image=rotation(flip_image,degrees)
 				save_image_same_resolution(rotated_image,new_j)
@@ -279,7 +285,10 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 						current_time=time.time()-estd_time
 						print("                                                                         ",end="\r")
 						print((counter/total_images_created)*100,"% \tEstimated time = ",math.floor((current_time*(total_images_created-counter))/counter)," seconds",end="\r");
-					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_"+str(degrees)+"_rotate.jpeg"
+					mathematicalSign = "positive"
+					if (degrees < 0):
+						mathematicalSign = "negative"
+					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_"+mathematicalSign+"_"+str(degrees)+"_rotate.jpg"
 					# print(new_j)
 					rotated_image=rotation(noisy_image,degrees)
 					save_image_same_resolution(rotated_image,new_j)
@@ -294,7 +303,10 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 						current_time=time.time()-estd_time
 						print("                                                                         ",end="\r")
 						print((counter/total_images_created)*100,"% \tEstimated time = ",math.floor((current_time*(total_images_created-counter))/counter)," seconds",end="\r");
-					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_flip_"+str(degrees)+"_rotate.jpg"
+					mathematicalSign = "positive"
+					if (degrees < 0):
+						mathematicalSign = "negative"
+					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_flip_"+mathematicalSign+"_"+str(degrees)+"_rotate.jpg"
 					# print(new_j)
 					rotated_image=rotation(flip_image,degrees)
 					save_image_same_resolution(rotated_image,new_j)
@@ -326,8 +338,8 @@ std_array=np.arange(80,126,15)#std array ranges from 80 to 125 in an interval of
 #all locations where dataset is present
 locations=[]
 locations.append("dataset/no_stairs")
-# locations.append("dataset/stairs/up")
-# locations.append("dataset/stairs/down")
+locations.append("dataset/stairs/up")
+locations.append("dataset/stairs/down")
 
 print("gathering image list...\n")
 #collect all the file names from each location/directory from the list of location given as an argument
