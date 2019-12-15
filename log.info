@@ -1,0 +1,30 @@
+
+--------------------logs--------------------
+--------------------2019-12-15 18:59:37.065538--------------------
+Number of files=1543
+number of files that will be created=123440
+
+--------------------logs--------------------
+--------------------2019-12-15 19:14:36.267967--------------------
+Number of files=1543
+number of files that will be created=123440
+
+--------------------logs------------------------------------------------------------
+--------------------2019-12-15 19:16:47.956369------------------------------------------------------------
+Number of files=1543
+number of files that will be created=123440
+
+--------------------logs------------------------------------------------------------
+--------------------2019-12-15 19:21:16.783117------------------------------------------------------------
+Number of files=1543
+number of files that will be created=123440
+
+--------------------logs------------------------------------------------------------
+--------------------2019-12-15 19:25:52.831268------------------------------------------------------------
+gathering image list...
+gathering image locations...
+Emptying augmented_dataset...
+creating augmented_dataset/creating augmented_dataset/no_stairs/creating augmented_dataset/creating augmented_dataset/stairs/creating augmented_dataset/stairs/up/creating augmented_dataset/creating augmented_dataset/stairs/creating augmented_dataset/stairs/down/
+augmenting data....
+Number of files=1543
+number of files that will be created=123440

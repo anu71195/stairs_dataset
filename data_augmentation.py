@@ -22,14 +22,14 @@ class log:
 	def __init__(self, filename):
 	    self.filename = filename
 	    self.f = open(filename,"a")
-	    init_string = "\n--------------------"+"logs"+"--------------------"+"\n--------------------"+str(datetime.datetime.now())+"--------------------\n"
+	    init_string = "\n--------------------"+"logs"+"------------------------------------------------------------"+"\n--------------------"+str(datetime.datetime.now())+"------------------------------------------------------------\n"
 	    self.f.write(init_string)
 
 	def log(self,data):
 		print(data)
 		self.f.write(data)
 
-	def close():
+	def close(self):
 		self.f.close()
 
 def check_create_directory(directories,new_dataset_preposition):#for given argument directories a list of directory.... all the non-existential directories are created
@@ -38,7 +38,8 @@ def check_create_directory(directories,new_dataset_preposition):#for given argum
 		directory=new_dataset_preposition
 		for loc_part in directory_loc:
 			directory=directory +(loc_part+"/")
-			print("creating " +directory)
+			log_string = str("creating " +directory)
+			logs.log(log_string)
 			if not os.path.exists(directory):
 				os.makedirs(directory)
 
@@ -58,7 +59,8 @@ def get_dataset(locations):#collect all the file names from each location/direct
 def give_path_to_images(file_list,locations,new_dataset_preposition,clear_augment_dataset):#catenate the string file name with its path and deleting the older augmented dataset directories if clear_augment_dataset is set to true
 	if clear_augment_dataset:
 		try:
-			print("Emptying "+new_dataset_preposition+"dataset...\n")
+			log_string = str("Emptying "+new_dataset_preposition+"dataset...\n")
+			logs.log(log_string)
 			shutil.rmtree(new_dataset_preposition+"dataset")
 		except:
 			pass
@@ -77,7 +79,8 @@ def rotation(img,degrees):#rotating the given image with the degrees given as an
 
 def gaussian(image,mean,var):  #adding gaussian noise to the image with given parameter mean and var
   row,col,ch= image.shape
-  print(mean,var)
+  log_string = str(str(mean)+", "+str(var))
+  logs.log(log_string)
   return (image + np.random.normal(mean,var,image.shape))
 
 def salt_pepper(image,s_vs_p,amount):#adding salt_pepper noise to the image
@@ -172,7 +175,7 @@ def save_image_fit_resolution(image,location):##expects floating valued image an
 def save_image_same_resolution(image,location):##expects floating valued image and save the image the same resolution given by the image which is the parameters to this function
 	cv2.imwrite(location,image*255)
 
-def augment_data(file_location,new_dataset_preposition,degree_range,noises,logs,width=None,height=None):#all the augmentation is done in this function
+def augment_data(file_location,new_dataset_preposition,degree_range,noises,width=None,height=None):#all the augmentation is done in this function
 	metadata={}
 	total_files=0;
 	counter=0;#keep track of number of files created
@@ -297,19 +300,20 @@ locations.append("dataset/no_stairs")
 locations.append("dataset/stairs/up")
 locations.append("dataset/stairs/down")
 
-print("gathering image list...\n")
+logs.log("gathering image list...\n")
 #collect all the file names from each location/directory from the list of location given as an argument
 file_list=get_dataset(locations)
 
-print("gathering image locations...\n")
+logs.log("gathering image locations...\n")
 #catenate the string file name with its path and deleting the older augmented dataset directories if clear_augment_dataset is set to true
 file_location=give_path_to_images(file_list,locations,new_dataset_preposition,clear_augment_dataset)
 
 augment_time=time.time()
-print("\naugmenting data....\n")
-augment_data(file_location,new_dataset_preposition,degree_range,noises,logs,width,height)#all the augmentation is done in this function
-print("\n\n\ntime to augment data=",time.time()-augment_time)
-print("total time taken=",time.time()-total_time)
+logs.log("\naugmenting data....\n")
+augment_data(file_location,new_dataset_preposition,degree_range,noises,width,height)#all the augmentation is done in this function
+log_string = str("\n\n\ntime to augment data=" + str(time.time()-augment_time))
+logs.log(log_string)
+log_string = str("total time taken=",time.time()-total_time)
 logs.log("total time taken=",time.time()-total_time)
 logs.close()
 
