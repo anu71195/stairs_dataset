@@ -311,9 +311,9 @@ file_location=give_path_to_images(file_list,locations,new_dataset_preposition,cl
 augment_time=time.time()
 logs.log("\naugmenting data....\n")
 augment_data(file_location,new_dataset_preposition,degree_range,noises,width,height)#all the augmentation is done in this function
-log_string = str("\n\n\ntime to augment data=" + str(time.time()-augment_time))
+log_string = str("\n\ntime to augment data=" + str(time.time()-augment_time)+"\n")
 logs.log(log_string)
-log_string = str("total time taken=",time.time()-total_time)
-logs.log("total time taken=",time.time()-total_time)
+log_string = str("total time taken="+str(time.time()-total_time))
+logs.log(log_string)
 logs.close()
 

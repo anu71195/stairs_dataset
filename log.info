@@ -28,3 +28,43 @@ creating augmented_dataset/creating augmented_dataset/no_stairs/creating augment
 augmenting data....
 Number of files=1543
 number of files that will be created=123440
+
+--------------------logs------------------------------------------------------------
+--------------------2019-12-15 19:50:53.758449------------------------------------------------------------
+gathering image list...
+gathering image locations...
+Emptying augmented_dataset...
+creating augmented_dataset/creating augmented_dataset/no_stairs/creating augmented_dataset/creating augmented_dataset/stairs/creating augmented_dataset/stairs/up/creating augmented_dataset/creating augmented_dataset/stairs/creating augmented_dataset/stairs/down/
+augmenting data....
+Number of files=1543
+number of files that will be created=123440
+
+
+
+time to augment data=716.0400471687317
+--------------------logs------------------------------------------------------------
+--------------------2019-12-15 20:16:16.625073------------------------------------------------------------
+gathering image list...
+gathering image locations...
+Emptying augmented_dataset...
+creating augmented_dataset/creating augmented_dataset/no_stairs/creating augmented_dataset/creating augmented_dataset/stairs/creating augmented_dataset/stairs/up/creating augmented_dataset/creating augmented_dataset/stairs/creating augmented_dataset/stairs/down/
+augmenting data....
+Number of files=1543
+number of files that will be created=123440
+
+
+
+time to augment data=826.3583397865295
+--------------------logs------------------------------------------------------------
+--------------------2019-12-15 20:32:36.864072------------------------------------------------------------
+gathering image list...
+gathering image locations...
+Emptying augmented_dataset...
+creating augmented_dataset/creating augmented_dataset/no_stairs/creating augmented_dataset/creating augmented_dataset/stairs/creating augmented_dataset/stairs/up/creating augmented_dataset/creating augmented_dataset/stairs/creating augmented_dataset/stairs/down/
+augmenting data....
+Number of files=1543
+number of files that will be created=123440
+
+
+
+time to augment data=788.3646085262299total time taken=790.5832517147064
