@@ -206,11 +206,7 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,logs,
 				mathematicalSign = "positive"
 				if (degrees < 0):
 						mathematicalSign = "negative"
-<<<<<<< HEAD
 				new_j=new_dataset_preposition+j.split(".")[0]+"_"+mathematicalSign+"_"+str(abs(degrees))+"_rotate.jpg"
-=======
-				new_j=new_dataset_preposition+j.split(".")[0]+"_"+mathematicalSign+"_"+str(degrees)+"_rotate.jpg"
->>>>>>> dbf794bc4cd94f1322659368aa1f3cb633c82831
 				# print(new_j)
 				rotated_image=rotation(image,degrees)
 				save_image_same_resolution(rotated_image,new_j)
@@ -228,11 +224,8 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,logs,
 				mathematicalSign = "positive"
 				if (degrees < 0):
 						mathematicalSign = "negative"
-<<<<<<< HEAD
 				new_j=new_dataset_preposition+j.split(".")[0]+"_flip_"+mathematicalSign+"_"+str(abs(degrees))+"_rotate.jpg"
-=======
-				new_j=new_dataset_preposition+j.split(".")[0]+"_flip_"+mathematicalSign+"_"+str(degrees)+"_rotate.jpg"
->>>>>>> dbf794bc4cd94f1322659368aa1f3cb633c82831
+
 				# print(new_j)
 				rotated_image=rotation(flip_image,degrees)
 				save_image_same_resolution(rotated_image,new_j)
@@ -251,11 +244,7 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,logs,
 					mathematicalSign = "positive"
 					if (degrees < 0):
 						mathematicalSign = "negative"
-<<<<<<< HEAD
 					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_"+mathematicalSign+"_"+str(abs(degrees))+"_rotate.jpg"
-=======
-					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_"+mathematicalSign+"_"+str(degrees)+"_rotate.jpg"
->>>>>>> dbf794bc4cd94f1322659368aa1f3cb633c82831
 					# print(new_j)
 					rotated_image=rotation(noisy_image,degrees)
 					save_image_same_resolution(rotated_image,new_j)
@@ -273,11 +262,7 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,logs,
 					mathematicalSign = "positive"
 					if (degrees < 0):
 						mathematicalSign = "negative"
-<<<<<<< HEAD
 					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_flip_"+mathematicalSign+"_"+str(abs(degrees))+"_rotate.jpg"
-=======
-					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_flip_"+mathematicalSign+"_"+str(degrees)+"_rotate.jpg"
->>>>>>> dbf794bc4cd94f1322659368aa1f3cb633c82831
 					# print(new_j)
 					rotated_image=rotation(flip_image,degrees)
 					save_image_same_resolution(rotated_image,new_j)
