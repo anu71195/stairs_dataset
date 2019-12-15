@@ -15,6 +15,22 @@ import piexif
 import pickle
 import time
 import math
+import datetime
+
+class log:
+
+	def __init__(self, filename):
+	    self.filename = filename
+	    self.f = open(filename,"a")
+	    init_string = "\n--------------------"+"logs"+"--------------------"+"\n--------------------"+str(datetime.datetime.now())+"--------------------\n"
+	    self.f.write(init_string)
+
+	def log(self,data):
+		print(data)
+		self.f.write(data)
+
+	def close():
+		self.f.close()
 
 def check_create_directory(directories,new_dataset_preposition):#for given argument directories a list of directory.... all the non-existential directories are created
 	for directory_loc in directories:
@@ -52,67 +68,6 @@ def give_path_to_images(file_list,locations,new_dataset_preposition,clear_augmen
 		for j in range(len(file_list[i])):
 			file_list[i][j]=locations[i]+"/"+file_list[i][j]
 	return file_list
-
-
-
-#right not augment_data is used instead of this function, the function is incomplete but s&p and guassian noises code is added where its different parameters likemean and variance for gaussian and 
-#s&p ratio and amount parameters can be manipulated
-def augment_data_1(file_location,new_dataset_preposition,min_degree,max_degree,mean_array,std_array,noises):
-	max_degree+=1;#in python the maxima is open bound not close bound so adding 1 to max degree
-	for i in file_location:
-		for j in i:
-			print(j)
-			image=cv2.imread(j)
-
-			for degrees in range(min_degree,max_degree):
-				new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(degrees)+"_rotate.jpg"
-				print(new_j)
-				cv2.imwrite(new_j,rotation(image,degrees))
-
-			flip_image=horizontal_flip(image)
-			for degrees in range(min_degree,max_degree):
-				new_j=new_dataset_preposition+j.split(".")[0]+"_flip_"+str(degrees)+"_rotate.jpg"
-				print(new_j)
-				cv2.imwrite(new_j,rotation(flip_image,degrees))
-
-			for noise in noises:
-				print(noise)
-				if(noise=="gaussian"):	
-					for mean in mean_array:
-						for std in std_array:
-
-							noisy_image=gaussian(image,mean,std)
-							for degrees in range(min_degree,max_degree):
-								new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(mean)+"_"+str(std)+"_"+noise+"_noise_"+str(degrees)+"_rotate.jpg"
-								print(new_j)
-								cv2.imwrite(new_j,rotation(noisy_image,degrees))
-
-
-							flip_image=horizontal_flip(noisy_image)
-							for degrees in range(min_degree,max_degree):
-								new_j=new_dataset_preposition+j.split(".")[0]+"_"+str(mean)+"_"+str(std)+"_"+noise+"_noise_flip_"+str(degrees)+"_rotate.jpg"
-								print(new_j)
-								cv2.imwrite(new_j,rotation(flip_image,degrees))
-
-				elif(noise=="s&p"):					
-					noisy_image=salt_pepper(image,0.5,0.1)
-					for degrees in range(min_degree,max_degree):
-						new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_"+str(degrees)+"_rotate.jpg"
-						print(new_j)
-						cv2.imwrite(new_j,rotation(noisy_image,degrees))
-
-
-					flip_image=horizontal_flip(noisy_image)
-					for degrees in range(min_degree,max_degree):
-						new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_flip_"+str(degrees)+"_rotate.jpg"
-						print(new_j)
-						cv2.imwrite(new_j,rotation(flip_image,degrees))
-					  
-				elif(noise=="poisson"):
-					pass;
-				elif(noise=="speckle"):
-					pass;
-
 
 def rotation(img,degrees):#rotating the given image with the degrees given as an argument
 	rows,cols,gar = img.shape
@@ -173,8 +128,6 @@ def extract_metadata(filename):
 	#returning the gpsinfo
 	return gpsinfo
 
-
-
 def image_resize(image, width = None, height = None, inter = cv2.INTER_AREA):
     # initialize the dimensions of the image to be resized and
     # grab the image size
@@ -219,7 +172,7 @@ def save_image_fit_resolution(image,location):##expects floating valued image an
 def save_image_same_resolution(image,location):##expects floating valued image and save the image the same resolution given by the image which is the parameters to this function
 	cv2.imwrite(location,image*255)
 
-def augment_data(file_location,new_dataset_preposition,degree_range,noises,width=None,height=None):#all the augmentation is done in this function
+def augment_data(file_location,new_dataset_preposition,degree_range,noises,logs,width=None,height=None):#all the augmentation is done in this function
 	metadata={}
 	total_files=0;
 	counter=0;#keep track of number of files created
@@ -227,11 +180,13 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 	#getting total number of files
 	for i in file_location:
 		total_files=total_files+len(i)
-	print("Number of files=",total_files,"\n")
+	log_string = str("Number of files="+str(total_files)+"\n") 
+	logs.log(log_string)
 
 	#getting total number of files which will be created
 	total_images_created=total_files*2*len(degree_range)*(len(noises)+1)
-	print("number of files that will be created=",total_images_created,"\n")
+	log_string = str("number of files that will be created="+str(total_images_created)+"\n")
+	logs.log(log_string)
 	estd_time=time.time()
 
 	for i in file_location:
@@ -251,7 +206,11 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 				mathematicalSign = "positive"
 				if (degrees < 0):
 						mathematicalSign = "negative"
+<<<<<<< HEAD
+				new_j=new_dataset_preposition+j.split(".")[0]+"_"+mathematicalSign+"_"+str(abs(degrees))+"_rotate.jpg"
+=======
 				new_j=new_dataset_preposition+j.split(".")[0]+"_"+mathematicalSign+"_"+str(degrees)+"_rotate.jpg"
+>>>>>>> dbf794bc4cd94f1322659368aa1f3cb633c82831
 				# print(new_j)
 				rotated_image=rotation(image,degrees)
 				save_image_same_resolution(rotated_image,new_j)
@@ -269,7 +228,11 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 				mathematicalSign = "positive"
 				if (degrees < 0):
 						mathematicalSign = "negative"
+<<<<<<< HEAD
+				new_j=new_dataset_preposition+j.split(".")[0]+"_flip_"+mathematicalSign+"_"+str(abs(degrees))+"_rotate.jpg"
+=======
 				new_j=new_dataset_preposition+j.split(".")[0]+"_flip_"+mathematicalSign+"_"+str(degrees)+"_rotate.jpg"
+>>>>>>> dbf794bc4cd94f1322659368aa1f3cb633c82831
 				# print(new_j)
 				rotated_image=rotation(flip_image,degrees)
 				save_image_same_resolution(rotated_image,new_j)
@@ -288,7 +251,11 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 					mathematicalSign = "positive"
 					if (degrees < 0):
 						mathematicalSign = "negative"
+<<<<<<< HEAD
+					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_"+mathematicalSign+"_"+str(abs(degrees))+"_rotate.jpg"
+=======
 					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_"+mathematicalSign+"_"+str(degrees)+"_rotate.jpg"
+>>>>>>> dbf794bc4cd94f1322659368aa1f3cb633c82831
 					# print(new_j)
 					rotated_image=rotation(noisy_image,degrees)
 					save_image_same_resolution(rotated_image,new_j)
@@ -306,7 +273,11 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 					mathematicalSign = "positive"
 					if (degrees < 0):
 						mathematicalSign = "negative"
+<<<<<<< HEAD
+					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_flip_"+mathematicalSign+"_"+str(abs(degrees))+"_rotate.jpg"
+=======
 					new_j=new_dataset_preposition+j.split(".")[0]+"_"+noise+"_noise_flip_"+mathematicalSign+"_"+str(degrees)+"_rotate.jpg"
+>>>>>>> dbf794bc4cd94f1322659368aa1f3cb633c82831
 					# print(new_j)
 					rotated_image=rotation(flip_image,degrees)
 					save_image_same_resolution(rotated_image,new_j)
@@ -323,8 +294,8 @@ def augment_data(file_location,new_dataset_preposition,degree_range,noises,width
 #save_image_fit_resolution is slover than save_image_same_resolution
 #it is expected that no changes in the directory names are made in the dataset including the directory dataset
 
-
-
+log_file = "log.info"
+logs = log(log_file)
 total_time=time.time()
 width=240
 height=320
@@ -351,7 +322,9 @@ file_location=give_path_to_images(file_list,locations,new_dataset_preposition,cl
 
 augment_time=time.time()
 print("\naugmenting data....\n")
-augment_data(file_location,new_dataset_preposition,degree_range,noises,width,height)#all the augmentation is done in this function
+augment_data(file_location,new_dataset_preposition,degree_range,noises,logs,width,height)#all the augmentation is done in this function
 print("\n\n\ntime to augment data=",time.time()-augment_time)
 print("total time taken=",time.time()-total_time)
+logs.log("total time taken=",time.time()-total_time)
+logs.close()
 
