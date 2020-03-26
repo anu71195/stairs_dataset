@@ -68,3 +68,16 @@ number of files that will be created=123440
 
 
 time to augment data=788.3646085262299total time taken=790.5832517147064
+--------------------logs------------------------------------------------------------
+--------------------2020-02-10 23:18:20.730284------------------------------------------------------------
+gathering image list...
+gathering image locations...
+Emptying augmented_dataset...
+creating augmented_dataset/creating augmented_dataset/no_stairs/creating augmented_dataset/creating augmented_dataset/stairs/creating augmented_dataset/stairs/up/creating augmented_dataset/creating augmented_dataset/stairs/creating augmented_dataset/stairs/down/
+augmenting data....
+Number of files=1543
+number of files that will be created=123440
+
+
+time to augment data=628.7205395698547
+total time taken=628.7243876457214
